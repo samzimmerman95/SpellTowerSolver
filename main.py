@@ -3,6 +3,9 @@ from findGrid import convert
 from boggle import findWords
 from google.cloud import storage
 
+storage_client = storage.Client()
+bucket = storage_client.bucket('spelltowersolver-305522.appspot.com')
+
 
 def hello_gcs(event, context):
     """Triggered by a change to a Cloud Storage bucket.
@@ -18,7 +21,9 @@ def hello_gcs(event, context):
     if contentType == 'application/json':
         pass
     else:
-        main(event['name'])
+        blob = bucket.blob(event['name'])
+        blob.download_to_filename('/tmp/current.png')
+        main('/tmp/current.png')
 
     # bucket_name = "your-bucket-name"
     # source_file_name = "local/path/to/file"
@@ -42,8 +47,6 @@ def main(fileName):
 
     i = fileName.index('/')
     name = fileName[:i]
-    storage_client = storage.Client()
-    bucket = storage_client.bucket('spelltowersolver-305522.appspot.com')
     blob = bucket.blob(name + '/' + name + '.json')
 
     blob.upload_from_filename("output.json")
