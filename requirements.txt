@@ -1,0 +1,7 @@
+google-cloud-storage
+numpy>=1.17.3
+Pillow>=08.0.1
+pip>=20.3.3
+pytesseract>=0.3.7
+regex>2020.5.7
+requests>=2.25.1
