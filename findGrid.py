@@ -6,6 +6,8 @@ import pytesseract
 import numpy as np
 # import matplotlib.pyplot as plt
 
+print("tesseract version:", pytesseract.get_tesseract_version())
+
 
 def darkMode(image):
     testArea = image.crop((0, 5, image.width, 10))
@@ -33,8 +35,8 @@ def cropAndFilter(file):
     tower = Image.open(file)
     if newDarkMode(tower):
         tower = ImageOps.invert(tower)
-        print("Dark Mode detected!")
-        tower.show()
+        # print("Dark Mode detected!")
+        # tower.show()
 
     topRemoved = tower.crop((0, tower.height/5, tower.width, tower.height))
 
@@ -52,8 +54,9 @@ def cropAndFilter(file):
 
 
 def recgonizeLetters(image):
+    customConfig = r'--psm 6 -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ load_system_dawg=false load_freq_dawg=false'
     grid = pytesseract.image_to_boxes(
-        image, output_type=pytesseract.Output.DICT, config=("--psm 6 load_system_dawg=false load_freq_dawg=false -c tessedit_char_whitelist=ABCDEFGHIJKLMNOPQRSTUVWXYZ"))
+        image, output_type=pytesseract.Output.DICT, config=customConfig)
     grid.pop('page', None)
     return grid
 
@@ -73,8 +76,8 @@ def drawBoundingBoxes(image, data):
         im.line([x-10, h-y, x+10, h-y], width=2, fill="#0000ff")
         im.line([x, h-y-10, x, h-y+10], width=2, fill="#0000ff")
 
-    print("num boxes: ", len(data['char']))
-    image.show()
+    # print("num boxes: ", len(data['char']))
+    # image.show()
 
 
 def removeErrantRecognitions(image, data):
@@ -87,10 +90,10 @@ def removeErrantRecognitions(image, data):
         width = data['right'][i] - data['left'][i]
         if height > upperBound or width > upperBound:
             toRemove.append(i)
-            print(height, width)
+            # print(height, width)
         elif height < lowerBound and width < lowerBound:
             toRemove.append(i)
-            print(height, width)
+            # print(height, width)
 
     toRemove.sort(reverse=True)
     for index in toRemove:
@@ -99,7 +102,7 @@ def removeErrantRecognitions(image, data):
         data['right'].pop(index)
         data['top'].pop(index)
         data['bottom'].pop(index)
-        print("Removed index:", index)
+        # print("Removed index:", index)
 
 
 def calculateRow(image, data):
@@ -175,6 +178,7 @@ def identifyLocation(section, raw, averages, data):
 def constructGrid(data):
     rows = max(data['row'])
     cols = max(data['col'])
+    print(f"Construct grid {rows} rows and {cols} cols.")
     grid = [[' ' for c in range(cols+1)] for r in range(rows+1)]
 
     for i in range(len(data['char'])):
@@ -206,7 +210,7 @@ def displayCroppedGrid(file, image, data, cropHeight):
     h = image.height + cropHeight
     original = Image.open(file)
     c = original.crop((left, h-top, right, h-bottom))
-    c.show()
+    # c.show()
 
 
 def convert(file):
@@ -224,4 +228,4 @@ def convert(file):
 
 # convert('DarkTower.jpeg')
 # convert('newApp/4.jpeg')
-# convert('current/2.jpeg')
+# print(convert('current/2.jpeg'))

@@ -5,9 +5,9 @@ import re
 def findWords(file, grid):
     # grid = convert(file)
     nrows, ncols = len(grid), len(grid[0])
-    print('------------')
-    print('\n'.join(grid))
-    print('------------')
+    # print('------------')
+    # print('\n'.join(grid))
+    # print('------------')
     # A dictionary word that could be a solution must use only the grid's
     # letters and have length >= 3. (With a case-insensitive match.)
     alphabet = ''.join(set(''.join(grid)))
