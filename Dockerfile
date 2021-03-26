@@ -17,10 +17,15 @@ FROM python:3.8
 # RUN apt-get update -qqy && apt-get install -qqy \
 #     tesseract-ocr \
 #     libtesseract-dev
-RUN apt-get update -qqy
-RUN apt-get install -qqy automake ca-certificates g++ git libtool libleptonica-dev make pkg-config
-COPY . ./
-RUN cd tesseract5 && \
+
+RUN apt-get update -qqy; \
+    apt-get install -qqy --no-install-recommends automake ca-certificates g++ git libtool libleptonica-dev make pkg-config; \
+    rm -rf /var/lib/apt/lists/*
+
+# RUN apt-get update -qqy 
+# RUN apt-get install -qqy automake ca-certificates g++ git libtool libleptonica-dev make pkg-config
+COPY tesseract-master/ ./tesseract-master/
+RUN cd tesseract-master && \
     ./autogen.sh && \
     ./configure && \
     make && \
